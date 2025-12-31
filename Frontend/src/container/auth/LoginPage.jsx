@@ -13,7 +13,7 @@ function LoginPage() {
   const [formError, setFormError] = useState({ email: '', password: '' });
   const navigate = useNavigate();
   // const BASE_URI="https://clean-cycle-backend.onrender.com"
-  const BASE_URI="http://localhost:5000";
+const BASE_URI="https://clean-cycle-po6i.onrender.com"
   const changeHandler = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };

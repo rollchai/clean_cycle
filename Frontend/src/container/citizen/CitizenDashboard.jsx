@@ -20,7 +20,7 @@ import ROUTES from "../../navigation/Routes";
  * Status helpers
  */
   // const BASE_URI="https://clean-cycle-backend.onrender.com"
-   const BASE_URI="http://localhost:5000";
+   const BASE_URI="https://clean-cycle-po6i.onrender.com"
 const statusStyles = {
   Completed: {
     chip: "bg-green-100 text-green-800 ring-1 ring-green-300",
