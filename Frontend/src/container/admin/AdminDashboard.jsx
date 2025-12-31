@@ -16,7 +16,7 @@ export default function AdminDashboard() {
     fetchAgents();
   }, []);
   // const BASE_URI="https://clean-cycle-backend.onrender.com"
-   const BASE_URI="http://localhost:5000";
+   const BASE_URI="https://clean-cycle-po6i.onrender.com"
   const fetchPickups = async () => {
     try {
       const res = await axios.get(`${BASE_URI}/pickups`);
