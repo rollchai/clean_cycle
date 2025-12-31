@@ -17,7 +17,7 @@ function ContactPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   // const BASE_URI="https://clean-cycle-backend.onrender.com"
-   const BASE_URI="http://localhost:5000";
+   const BASE_URI="https://clean-cycle-po6i.onrender.com"
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);

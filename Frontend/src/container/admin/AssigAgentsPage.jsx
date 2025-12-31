@@ -11,7 +11,7 @@ function AssigAgentsPage() {
   const [agents, setAgents] = useState([]);
   const [selectAgents, setSelectAgents] = useState({});
   // const BASE_URI="https://clean-cycle-backend.onrender.com"
-   const BASE_URI="http://localhost:5000";
+ const BASE_URI="https://clean-cycle-po6i.onrender.com"
   // Fetch pickups
   const fetchPickup = async () => {
     try {

@@ -9,7 +9,7 @@ function AgentDashboard() {
   const [assignedPickups,setAssignedPickups]=useState([])
   const[loading,setloading]=useState([])
   // const BASE_URI="https://clean-cycle-backend.onrender.com"
-   const BASE_URI="http://localhost:5000";
+  const BASE_URI="https://clean-cycle-po6i.onrender.com"
   const storedUser = localStorage.getItem("user");
 const user = JSON.parse(storedUser);
 const agentId = user?._id;

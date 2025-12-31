@@ -15,7 +15,7 @@ function PickupHistory() {
   const user = JSON.parse(storedUser);
   const userId = user?._id;
   // const BASE_URI="https://clean-cycle-backend.onrender.com"
-   const BASE_URI="http://localhost:5000";
+ const BASE_URI="https://clean-cycle-po6i.onrender.com"
   const fetchPickups = async () => {
     try {
       const res = await axios.get(
