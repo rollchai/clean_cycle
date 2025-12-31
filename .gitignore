@@ -1,0 +1,9 @@
+# Ignore dependencies
+node_modules/
+*/node_modules/
+
+# Ignore secrets
+.env
+*/.env
+*.env
+.DS_Store
