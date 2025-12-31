@@ -11,7 +11,7 @@ export default function CompletePickupPage({ pickupId }) {
   const [score, setScore] = useState(null);
   const [quality, setQuality] = useState("good");
   // const BASE_URI="https://clean-cycle-backend.onrender.com"
-   const BASE_URI="http://localhost:5000";
+ const BASE_URI="https://clean-cycle-po6i.onrender.com"
   // Get logged-in agent
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
