@@ -21,7 +21,7 @@ function ProfilePage() {
 
   const [loading, setLoading] = useState(true);
   // const BASE_URI="https://clean-cycle-backend.onrender.com"
-   const BASE_URI="http://localhost:5000";
+   const BASE_URI="https://clean-cycle-po6i.onrender.com"
   // Fetch user info
   useEffect(() => {
     getInfo();
