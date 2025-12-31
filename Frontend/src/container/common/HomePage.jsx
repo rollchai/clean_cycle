@@ -1,8 +1,11 @@
 import React from "react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
-
+import { Route } from "lucide-react";
+import ROUTES from "../../navigation/Routes";
+import { useNavigate } from "react-router-dom";
 export default function HomePage() {
+  const navigate=useNavigate();
   return (
     <div><Navbar/>
     <div className="font-sans text-gray-800 mt-0.5">
@@ -22,7 +25,7 @@ export default function HomePage() {
             Join hands as Citizens, Agents, and Admins to make our cities
             cleaner and more sustainable.
           </p>
-          <button className="mt-6 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full text-lg font-medium shadow-lg">
+          <button onClick={()=>navigate(ROUTES.LoginPage.name)} className="mt-6 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full text-lg font-medium shadow-lg">
             Get Started
           </button>
         </div>
