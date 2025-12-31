@@ -16,7 +16,7 @@ function SchedulePickupPage() {
     To_number: "",
   });
   // const BASE_URI="https://clean-cycle-backend.onrender.com"
-   const BASE_URI="http://localhost:5000";
+   const BASE_URI="https://clean-cycle-po6i.onrender.com"
   // ✅ Reset form after submission
   const resetForm = () => {
     setForm({
