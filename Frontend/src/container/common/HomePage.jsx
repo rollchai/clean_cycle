@@ -3,7 +3,7 @@ import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { Route } from "lucide-react";
 import ROUTES from "../../navigation/Routes";
-import { useNavigate } from "react-router-dom";
+import { Routes, useNavigate } from "react-router-dom";
 export default function HomePage() {
   const navigate=useNavigate();
   return (
@@ -99,7 +99,9 @@ export default function HomePage() {
         <p className="text-lg mb-6">
           Sign up today and join the CleanCycle movement!
         </p>
-        <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full text-lg font-medium shadow-lg">
+        <button onClick={()=>
+          navigate(ROUTES.Registeration.name)
+        } className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full text-lg font-medium shadow-lg">
           Join Now
         </button>
       </section>
