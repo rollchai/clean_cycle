@@ -18,22 +18,19 @@ dotenv.config();
 try {
   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
-  // Ensure the private key exists and fix newline characters
-  if (serviceAccount.private_key) {
-    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
-  } else {
-    throw new Error("Private key is missing from the service account object.");
-  }
+  // 1. Fix the newline formatting specifically
+  const formattedKey = serviceAccount.private_key.replace(/\\n/g, '\n');
 
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.cert({
+      ...serviceAccount,
+      private_key: formattedKey, // 2. Use the repaired key
+    }),
   });
-  
-  console.log("Firebase Admin initialized successfully.");
+
+  console.log("✅ Firebase Admin Initialized");
 } catch (error) {
-  console.error("Firebase initialization error:", error.message);
-  // Optional: prevent the server from starting if Firebase is critical
-  // process.exit(1); 
+  console.error("❌ Firebase initialization error:", error.message);
 }
 
 const app=express();
