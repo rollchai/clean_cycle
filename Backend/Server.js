@@ -18,16 +18,9 @@ const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
 if (!raw) {
   throw new Error("Missing FIREBASE_SERVICE_ACCOUNT");
 }
-
-const serviceAccount = {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-};
-
-console.log(serviceAccount.private_key);
-// 🔥 FIX: convert \\n → actual new lines
-serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n");
+const serviceAccount = JSON.parse(
+  fs.readFileSync("./serviceAccountKey.json", "utf8")
+);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
