@@ -1,10 +1,9 @@
-import pickupMOdel from "../model/Pickup.js"
+import pickupMOdel from "../model/Pickup.js";
 import Score from "../model/Score.js";
-import usermodel from "../model/User.js"
+import usermodel from "../model/User.js";
 import dotenv from "dotenv";
 import twilio from "twilio";
-
-
+import admin from "firebase-admin"
 dotenv.config();
 
 // Twilio client
@@ -23,66 +22,97 @@ export const pickup = async (req, res) => {
       instructions: req.body.instructions,
       status: req.body.status,
       user: req.params.userId,
-      To_number:req.body.To_number
+      To_number: req.body.To_number,
     });
 
     if (pickup) {
       // Send SMS
+// Get all agents
+const agents = await usermodel.find({ role: "agent" });
+
+// Collect all tokens in one array
+const tokens = agents
+  .map(agent => agent.fcmTokens || [])
+  .flat()
+  .filter(Boolean);
+
+console.log("Total tokens:", tokens.length);
+
+if (tokens.length > 0) {
+  try {
+    const message = {
+      notification: {
+        title: "🚛 New Pickup Request",
+        body: `New pickup scheduled on ${pickup.date} at ${pickup.timeslot}`,
+      },
+      data: {
+        pickupId: pickup._id.toString(),
+      },
+      tokens: tokens, // 👈 send to all at once
+    };
+
+    const response = await admin.messaging().sendEachForMulticast(message);
+
+    console.log("Notifications sent:");
+    console.log("Success:", response.successCount);
+    console.log("Failed:", response.failureCount);
+
+  } catch (err) {
+    console.log("FCM error:", err.message);
+  }
+} else {
+  console.log("No FCM tokens found for agents");
+}
+
       try {
         await client.messages.create({
           from: process.env.TWILIO_PHONE_NUMBER, // SMS number from .env
-          to: pickup.To_number,            // Receiver from .env
-          body: `✅ Pickup confirmed!\nDate: ${pickup.date}\nTime: ${pickup.timeslot}\nWaste Type: ${pickup.wasteType}`
+          to: pickup.To_number, // Receiver from .env
+          body: `✅ Pickup confirmed!\nDate: ${pickup.date}\nTime: ${pickup.timeslot}\nWaste Type: ${pickup.wasteType}`,
         });
 
         return res.status(201).send({
           message: "Pickup confirmed and SMS sent",
-          pickup
+          pickup,
         });
-
       } catch (twilioError) {
         console.error("Twilio error:", twilioError);
         return res.status(201).send({
           message: "Pickup confirmed but failed to send SMS",
-          pickup
+          pickup,
         });
       }
-
     } else {
       return res.status(400).send({ message: "Pickup not confirmed" });
     }
-
   } catch (error) {
     console.error(error);
     res.status(500).send({
       message: "Server error",
-      error: error.message
+      error: error.message,
     });
   }
 };
 
-
-
-export const getpickup=async(req,res)=>{
-    try {
-         const pickupdata=await pickupMOdel.find({
-    }).sort({ createdAt: -1 });
-    res.json({pickupdata})
-    } catch (error) {
-        res.status(500).json({error:"failed to fetch pickup"})
-    }
-}
-export const deletePickup=async(req,res)=>{
+export const getpickup = async (req, res) => {
   try {
-    const deletepickup=await pickupMOdel.deleteOne({
-      _id:req.body.id,
-    })
-    if(deletePickup)res.status(201).send({message:"schdule deleted"})
-        else res.status(401).send({message:"unable to delete schdule"})
+    const pickupdata = await pickupMOdel.find({}).sort({ createdAt: -1 });
+    res.json({ pickupdata });
   } catch (error) {
-    console.log("fail to delete schdule")
+    res.status(500).json({ error: "failed to fetch pickup" });
   }
-}
+};
+export const deletePickup = async (req, res) => {
+  try {
+    const deletepickup = await pickupMOdel.deleteOne({
+      _id: req.body.id,
+    });
+    if (deletePickup) res.status(201).send({ message: "schdule deleted" });
+    else res.status(401).send({ message: "unable to delete schdule" });
+  } catch (error) {
+    console.log("fail to delete schdule");
+  }
+};
 
 export const updatePickupStatus = async (req, res) => {
   try {
@@ -95,9 +125,9 @@ export const updatePickupStatus = async (req, res) => {
         address: req.body.address,
         instructions: req.body.instructions,
         status: req.body.status,
-        To_number:req.body.To_number
+        To_number: req.body.To_number,
       },
-      { new: true } // return updated document
+      { new: true }, // return updated document
     );
 
     if (!update) {
@@ -112,69 +142,67 @@ export const updatePickupStatus = async (req, res) => {
         body: `✅ Your Pickup has been updated successfully!
 Date: ${update.date}
 Time: ${update.timeslot}
-Waste Type: ${update.wasteType}`
+Waste Type: ${update.wasteType}`,
       });
 
       return res.status(200).send({
         message: "Pickup updated and SMS sent",
-        update
+        update,
       });
-
     } catch (twilioError) {
       console.error("Twilio error:", twilioError);
       return res.status(200).send({
         message: "Pickup updated but failed to send SMS",
-        update
+        update,
       });
     }
-
   } catch (error) {
     console.error(error);
     return res.status(500).send({
       message: "Server error",
-      error: error.message
+      error: error.message,
     });
   }
 };
 
 // Get pickups assigned to a specific agent
-export const getAgentPickup=async (req,res)=>{
-    const {agentId}=req.params
-   try {
-    const pickup=await pickupMOdel.find({
-      assignedTo:agentId
-    })
-    res.json(pickup)
-   } catch (error) {
-    console.log("failed to getagentpickup")
-   } 
+export const getAgentPickup = async (req, res) => {
+  const { agentId } = req.params;
+  try {
+    const pickup = await pickupMOdel.find({
+      assignedTo: agentId,
+    });
+    res.json(pickup);
+  } catch (error) {
+    console.log("failed to getagentpickup");
   }
+};
 
-  export const  completePickup=async(req,res)=>{
-    const{pickupId}=req.params;
-    try {
-      const update=await pickupMOdel.findByIdAndUpdate(
-        pickupId,
-        {
-          status:"Completed"
-        },
-        {new:true}
-      );
-      res.json(update)
-    } catch (error) {
-      console.log("Failed to complete pickup")
-    }
+export const completePickup = async (req, res) => {
+  const { pickupId } = req.params;
+  try {
+    const update = await pickupMOdel.findByIdAndUpdate(
+      pickupId,
+      {
+        status: "Completed",
+      },
+      { new: true },
+    );
+    res.json(update);
+  } catch (error) {
+    console.log("Failed to complete pickup");
   }
+};
 
-  // for citizen deshboard
+// for citizen deshboard
 
 export const getCitizenPickups = async (req, res) => {
   const { userId } = req.params;
-  console.log("Fetching pickups for user:", userId); 
+  console.log("Fetching pickups for user:", userId);
 
   try {
-    const pickups = await pickupMOdel.find({ user: userId }); 
-    console.log("Pickups found:", pickups); 
+    const pickups = await pickupMOdel.find({ user: userId });
+    console.log("Pickups found:", pickups);
     res.json(pickups);
   } catch (error) {
     console.error("Error fetching pickups:", error);
@@ -183,11 +211,11 @@ export const getCitizenPickups = async (req, res) => {
 };
 export const historyPickup = async (req, res) => {
   const { userId } = req.params;
-  console.log("Fetching pickups for user:", userId); 
+  console.log("Fetching pickups for user:", userId);
 
   try {
-    const pickups = await pickupMOdel.find({ user: userId }); 
-    console.log("Pickups found:", pickups); 
+    const pickups = await pickupMOdel.find({ user: userId });
+    console.log("Pickups found:", pickups);
     res.json(pickups);
   } catch (error) {
     console.error("Error fetching pickups:", error);
@@ -211,24 +239,26 @@ export const getRewardInfo = async (req, res) => {
   }
 };
 
-
-
 // score
-export const scorepickup=async(req,res)=>{
+export const scorepickup = async (req, res) => {
   try {
-    const {pickupId,userId,segregationQuality}=req.body;
-    let points=10; 
-    if(segregationQuality==="good") points+=5;
-    let score =await Score.findOne({userId})
-    if(!score){
-      score=new Score({userId,totalPoints:points,history:[{points,reason:"Pickup completed"}]})
+    const { pickupId, userId, segregationQuality } = req.body;
+    let points = 10;
+    if (segregationQuality === "good") points += 5;
+    let score = await Score.findOne({ userId });
+    if (!score) {
+      score = new Score({
+        userId,
+        totalPoints: points,
+        history: [{ points, reason: "Pickup completed" }],
+      });
     } else {
-      score.totalPoints+=points;
-      score.history.push({points,reason:"pickup completed"})
+      score.totalPoints += points;
+      score.history.push({ points, reason: "pickup completed" });
     }
     await score.save();
-    res.json({message:"pickup completed and points added",score})
+    res.json({ message: "pickup completed and points added", score });
   } catch (error) {
-    res.status(500).json({error:error.message})
+    res.status(500).json({ error: error.message });
   }
-}
+};

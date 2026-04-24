@@ -76,8 +76,7 @@ function SchedulePickupPage() {
         ...form,
         To_number: phone,
       });
-
-      toast.success(response.data.message || "Pickup scheduled successfully!");
+  toast.success("Pickup scheduled successfully!");
       resetForm();
     } catch (error) {
       console.error("Error scheduling pickup:", error.response?.data || error.message);

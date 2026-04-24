@@ -3,16 +3,22 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import {  getallagents, getProfile, login, register, updateProfile } from "./controller/User.js";
+import {  getallagents, getProfile, login, register, saveFcmToken, updateProfile } from "./controller/User.js";
 import { completePickup, deletePickup, getAgentPickup, getCitizenPickups, getpickup, getRewardInfo, historyPickup, pickup, scorepickup, updatePickupStatus } from "./controller/Pickup.js";
 import { assignAgent, pickuprequest } from "./controller/PickupRequest.js";
 import {deleteUser, getAllPickups, getFeedbacks, getStats, getUsers, updatePickup} from "./controller/adminController.js"
 import { sendContactMessage } from "./controller/Email.js";
 import { createFeedback } from "./controller/feed.js";
 import { getUserPoints } from "./controller/Score.js";
-
+import admin from "firebase-admin";
+import fs from "fs";
 dotenv.config();
-
+const serviceAccount = JSON.parse(
+  fs.readFileSync("./serviceAccountKey.json", "utf8")
+);
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 const app=express();
 app.use(cors())
@@ -26,6 +32,7 @@ app.put("/updateprofile",updateProfile)
 app.get("/getprofile/:id",getProfile)
 app.get("/agents",getallagents)
 app.post("/email",sendContactMessage)
+app.post("/save-fcm-token",  saveFcmToken);
 
 app.get("/stats", getStats);         // For admin statistics  
 app.get("/pickups", getAllPickups);  // Get all pickups (for management)  

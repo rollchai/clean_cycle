@@ -29,9 +29,9 @@ function Navbar() {
       <li><Link to={ROUTES.Contact.name} className="hover:text-green-200">Contact</Link></li>
       <li><Link to={ROUTES.About.name} className="hover:text-green-200">About</Link></li>
       <li>
-        <Link to={ROUTES.ProfilePage.name} className="flex items-center space-x-1 hover:text-green-200">
+        <Link to={ROUTES.ProfilePage.name} className="flex items-center space-x-1 hover:text-green-200 justify-center">
           <User className="w-4 h-4" />
-          <span>Profile</span>
+          <span >Profile</span>
         </Link>
       </li>
     </>

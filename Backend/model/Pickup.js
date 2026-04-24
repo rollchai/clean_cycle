@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import firebase from "firebase-admin";
 const pickupschema=mongoose.Schema({
 
 wasteType:{
