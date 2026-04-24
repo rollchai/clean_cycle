@@ -11,20 +11,30 @@ import { sendContactMessage } from "./controller/Email.js";
 import { createFeedback } from "./controller/feed.js";
 import { getUserPoints } from "./controller/Score.js";
 import admin from "firebase-admin";
-import fs from "fs";
 
 dotenv.config();
-const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
 
-if (!raw) {
-  throw new Error("Missing FIREBASE_SERVICE_ACCOUNT");
+
+try {
+  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+
+  // Ensure the private key exists and fix newline characters
+  if (serviceAccount.private_key) {
+    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+  } else {
+    throw new Error("Private key is missing from the service account object.");
+  }
+
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+  
+  console.log("Firebase Admin initialized successfully.");
+} catch (error) {
+  console.error("Firebase initialization error:", error.message);
+  // Optional: prevent the server from starting if Firebase is critical
+  // process.exit(1); 
 }
-const serviceAccount = JSON.parse(
-  fs.readFileSync("./controller/serviceAccountKey.json", "utf8")
-);
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
 
 const app=express();
 app.use(cors())
