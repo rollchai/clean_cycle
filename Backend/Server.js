@@ -20,7 +20,7 @@ if (!raw) {
   throw new Error("Missing FIREBASE_SERVICE_ACCOUNT");
 }
 const serviceAccount = JSON.parse(
-  fs.readFileSync("./serviceAccountKey.json", "utf8")
+  fs.readFileSync("./controller/serviceAccountKey.json", "utf8")
 );
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
