@@ -13,9 +13,7 @@ import { getUserPoints } from "./controller/Score.js";
 import admin from "firebase-admin";
 import fs from "fs";
 dotenv.config();
-const serviceAccount = JSON.parse(
-  fs.readFileSync("./serviceAccountKey.json", "utf8")
-);
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
@@ -32,7 +30,7 @@ app.put("/updateprofile",updateProfile)
 app.get("/getprofile/:id",getProfile)
 app.get("/agents",getallagents)
 app.post("/email",sendContactMessage)
-app.post("/save-fcm-token", saveFcmToken);
+app.post("/save-fcm-token",  saveFcmToken);
 
 app.get("/stats", getStats);         // For admin statistics  
 app.get("/pickups", getAllPickups);  // Get all pickups (for management)  

@@ -21,7 +21,7 @@ if(permission==="granted"){
   localStorage.setItem("fcmToken",fcmtoken)
       await axios.post(
       `${BASE_URI}/save-fcm-token`,
-      { fcmtoken: fcmtoken,
+      { token: fcmtoken,
        userId: localStorage.getItem("userId")
        },
       {
