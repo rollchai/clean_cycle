@@ -9,6 +9,7 @@ import { messaging } from "../../utils/firebaseUtils";
 import axios from "axios";
 import { Body } from "twilio/lib/twiml/MessagingResponse";
 export default function HomePage() {
+  const BASE_URI="https://clean-cycle-po6i.onrender.com"
   const navigate=useNavigate();
   const [fcnToken, setfcnToken] = useState(null)
   async function RequestPermission(){
@@ -19,7 +20,7 @@ if(permission==="granted"){
   console.log("token",fcmtoken);
   localStorage.setItem("fcmToken",fcmtoken)
       await axios.post(
-      "http://localhost:5000/save-fcm-token",
+      `${BASE_URI}/save-fcm-token`,
       { token: fcmtoken,
        userId: localStorage.getItem("userId")
        },
