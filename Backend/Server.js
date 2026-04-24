@@ -12,6 +12,7 @@ import { createFeedback } from "./controller/feed.js";
 import { getUserPoints } from "./controller/Score.js";
 import admin from "firebase-admin";
 import fs from "fs";
+
 dotenv.config();
 const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
 
