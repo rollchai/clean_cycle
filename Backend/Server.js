@@ -32,7 +32,7 @@ app.put("/updateprofile",updateProfile)
 app.get("/getprofile/:id",getProfile)
 app.get("/agents",getallagents)
 app.post("/email",sendContactMessage)
-app.post("/save-fcm-token",  saveFcmToken);
+app.post("/save-fcm-token", saveFcmToken);
 
 app.get("/stats", getStats);         // For admin statistics  
 app.get("/pickups", getAllPickups);  // Get all pickups (for management)  

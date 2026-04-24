@@ -106,7 +106,7 @@ export const getProfile = async (req, res) => {
 export const saveFcmToken = async (req, res) => {
   try {
     const userId = req.body.userId; 
-    const { token } = req.body;
+    const { fcmtoken } = req.body;
 
     const user = await usermodel.findById(userId);
 
@@ -114,8 +114,8 @@ export const saveFcmToken = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (!user.fcmTokens.includes(token)) {
-      user.fcmTokens.push(token);
+    if (!user.fcmTokens.includes(fcmtoken)) {
+      user.fcmTokens.push(fcmtoken);
     }
 
     await user.save();
